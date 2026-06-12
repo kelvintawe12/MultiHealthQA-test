@@ -1,0 +1,47 @@
+# configs/mt5_base.yaml
+# Default configuration for google/mt5-base with LoRA r=16
+# Safe for T4 GPU (15 GB VRAM) and most consumer GPUs
+
+model_name: "google/mt5-base"
+experiment_name: "exp03_mt5base_lora_r16_subsetprompt"
+
+# Token budgets — justified by EDA:
+#   100% of inputs fit in 128 tokens
+#   99%+ of answers (95%+ Akan) fit in 384 tokens
+max_input_length: 128
+max_target_length: 384
+
+# Training
+num_train_epochs: 5
+per_device_train_batch_size: 8
+per_device_eval_batch_size: 8
+gradient_accumulation_steps: 4
+learning_rate: 0.0003
+warmup_ratio: 0.06
+weight_decay: 0.01
+lr_scheduler_type: "cosine"
+label_smoothing_factor: 0.1
+early_stopping_patience: 2
+seed: 42
+
+# PEFT / LoRA
+use_peft: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: ["q", "v"]
+
+# Inference
+num_beams: 4
+no_repeat_ngram_size: 3
+
+# Paths
+data_dir: "data"
+output_dir: "outputs"
+submission_dir: "outputs/submissions"
+reports_dir: "reports"
+
+# Logging
+logging_steps: 100
+report_to: "none"
+dataloader_num_workers: 0
